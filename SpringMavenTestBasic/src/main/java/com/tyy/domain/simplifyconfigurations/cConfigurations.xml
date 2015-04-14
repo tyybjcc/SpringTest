@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- default-autowire = "no|byName|byType|constructor|autodetect" -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+	
+	<!-- c命名空间用于简化构造传值的依赖注入 -->
+	<bean id="myCircle" class="com.tyy.domain.Circle" c:radius="3"/>
+	<!-- 对于ref，只要在property名后加"-ref"即可 -->
+	<bean id="myNamedCircleWrapper2" class="com.tyy.domain.CircleWrapperWithName2" c:name="Tyy's Circle2" c:circle-ref="myCircle" /> 
+	
+</beans>

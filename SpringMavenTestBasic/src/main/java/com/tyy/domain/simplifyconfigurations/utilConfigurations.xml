@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- default-autowire = "no|byName|byType|constructor|autodetect" -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	">
+	
+	<bean id="myCircle" class="com.tyy.domain.Circle" p:radius="10"/>
+	
+	<util:set id="values.set" set-class="java.util.HashSet">
+		<!-- 可以使用value,ref,bean指定set elements -->
+		<value>set element1</value>
+		<value>2</value>
+		<ref bean="myCircle"/>
+	</util:set>
+	
+	<util:list id="values.list" list-class="java.util.ArrayList">
+		<value>list1</value>
+		<value>list2</value>
+		<value>3</value>
+		<ref bean="myCircle"/>
+	</util:list>
+	
+	<util:map id="values.map" map-class="java.util.HashMap">
+		<entry key="mapKey1" value="1"/>
+		<entry key="mapKey2" value="my map value2"/>
+		<!-- entry中不允许出现ref -->
+		<!-- <entry key="mapKey3" ref="myCircle"/> -->
+		<!-- key必须写在attribute中 -->
+		<!-- <entry>
+			<key>mapKey4</key>
+			<ref bean="myCircle"/>
+		</entry> -->
+		<entry key="mapKey4">
+			<ref bean="myCircle"/>
+		</entry>
+		<entry key="mapKey5">
+			<bean class="com.tyy.domain.Circle" p:radius="10"/>
+		</entry>
+	</util:map>
+	
+	<util:constant id="values.constant" static-field="com.tyy.domain.ShapeWrapper.WRAPPERNAME"/>
+	
+	<util:properties id="values.properties" location="classpath:com/tyy/domain/simplifyconfigurations/myProperties.properties"/>
+	
+	<bean id="myCollections" class="com.tyy.domain.ObjectCollections" p:map-ref="values.map" p:set-ref="values.set" 
+	p:list-ref="values.list" p:properties-ref="values.properties" p:obj-ref="myCircle"/>
+	
+	
+</beans>

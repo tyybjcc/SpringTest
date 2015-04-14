@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- default-autowire = "no|byName|byType|constructor|autodetect" -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+	
+	<bean id="myCircle" class="com.tyy.domain.Circle">
+		<property name="radius">
+			<value>2</value>
+		</property>
+	</bean>
+	<!-- 简写 -->
+	<bean id="myCircle2" class="com.tyy.domain.Circle">
+		<property name="radius" value="3"/>
+	</bean>
+	
+	
+	<!-- 通过property进行注入 -->
+	<bean id="myShapeWrapper" class="com.tyy.domain.ShapeWrapper">
+		<!-- 
+		<property name="shape">
+			<ref bean="myCircle"/>
+		</property>
+		可用下面一行的方式进行简写
+		 -->
+		<property name="shape" ref="myCircle"/>
+	</bean>
+	
+	
+	<!-- 通过constructor-arg进行注入 -->
+	<bean id="myShapeWrapper2" class="com.tyy.domain.ShapeWrapper">
+		<!-- 
+		<constructor-arg name="shape">
+			<ref bean="myCircle2"/>
+		</constructor-arg>
+		可用下面一行的方式进行简写
+		当有多个constructor-arg时，按顺序列出即可
+		 -->
+		<constructor-arg ref="myCircle2"/>
+	</bean>
+	<!-- 
+	或者使用index:
+	
+	<bean id="myShapeWrapper2" class="com.tyy.domain.ShapeWrapper">
+		<constructor-arg index="0">
+			<ref bean="myCircle2"/>
+		</constructor-arg>
+	</bean>
+	 -->
+	 
+	 
+	 <!-- 数组作为被注入对象 -->
+	 <bean id="mySomeCircle" class="com.tyy.domain.SomeCircle">
+	 	<property name="circleArray">
+	 		<list>
+	 			<ref bean="myCircle"/>
+	 			<ref bean="myCircle2"/>
+	 		</list>
+	 	</property>
+	 </bean>
+	 
+	 
+	 <!-- List作为被注入对象 -->
+	 <bean id="mySomeCircle2" class="com.tyy.domain.SomeCircle">
+	 	<property name="circleList">
+	 		<list>
+	 		<ref bean="myCircle2"/>
+	 		<ref bean="myCircle"/>
+	 		</list>
+	 	</property>
+	 </bean>
+	 
+	 
+	 <!-- Map作为被注入对象 -->
+	 <bean id="mySomeCircle3" class="com.tyy.domain.SomeCircle">
+	 	<property name="circleMap">
+	 		<map>
+	 			<entry key="circleKey1">
+	 				<ref bean="myCircle"/>
+	 			</entry>
+	 			<!-- 这是一种化简的方式 -->
+	 			<entry key="circleKey2" value-ref="myCircle2"/>
+	 			<entry key="circleKey1">
+	 				<bean class="com.tyy.domain.Circle"/>
+	 			</entry>
+	 		</map>
+	 	</property>
+	 </bean>
+	 
+	 
+	 <!-- Set作为被注入对象 -->
+	 <bean id="mySomeCircle4" class="com.tyy.domain.SomeCircle">
+	 	<property name="circleSet">
+	 		<set>
+	 			<ref bean="myCircle2"/>
+	 			<ref bean="myCircle"/>
+	 		</set>
+	 	</property>
+	 </bean>
+	 
+	 
+	 <!-- Properties作为被注入对象 -->
+	 <bean id="mySomeCircle5" class="com.tyy.domain.SomeCircle">
+	 	<property name="circleProperties">
+	 		<props>
+	 			<prop key="描述">圆的描述</prop>
+	 			<prop key="属性">半径、周长、面积</prop>
+	 		</props>
+	 		<!-- 
+	 		文本赋值法
+	 		<value>
+	 		description=circle description
+	 		circleProperties=radius,perimeter,area
+	 		</value>
+	 		 -->
+	 		<!--  -->
+	 	</property>
+	 </bean>
+	 
+	 
+	 <!-- Spring 组合属性的跨层注入 -->
+	 <!-- 
+	 为保证myCircle不为null，在构造函数中需要进行构造
+	  -->
+	 <bean id="mySomeCircle6" class="com.tyy.domain.SomeCircle">
+	 	<property name="myCircle.radius"><value>5</value></property>
+	 </bean>
+	 
+	 
+	 <!-- 匿名bean注入 -->
+	 <bean id="mySomeCircle7" class="com.tyy.domain.SomeCircle">
+	 	<property name="myCircle">
+	 		<bean class="com.tyy.domain.Circle">
+	 			<property name="radius" value="3"/>
+	 		</bean>
+	 	</property>
+	 </bean>
+	 
+	 
+	 
+	 <!-- EventListener -->
+	 <bean id="messageEventListener" class="com.tyy.springtest.event.MessageListener"/>
+	 
+	 
+	 <!-- bean 别名和alias别名 -->
+	 <bean id="myCircle3" class="com.tyy.domain.Circle" name="$circle1,#circle1,@circle1">
+	 	<property name="radius" value="10"/>
+	 </bean>
+	 
+	 <alias name="myCircle3" alias="myCircle3Alias"/>
+	 
+	 
+	 <!-- bean scope -->
+	 <bean id="myCircle4" class="com.tyy.domain.Circle" scope="prototype">
+	 	<property name="radius" value="4" />
+	 </bean>
+	 <bean id="myCircle5" class="com.tyy.domain.Circle" scope="request">
+	 	<property name="radius" value="8" />
+	 </bean>
+	 <!-- 为了使用request,session scope的bean，必须在web.xml中定义监听器 -->
+	 
+	 
+	 <!-- 静态工厂方法模式 -->
+	 <bean id="cat" class="com.tyy.domain.creation.AnimalFactory" factory-method="getAnimal">
+	 	<constructor-arg value="Cat"/>
+	 </bean>
+	 
+	 <!-- 实例工厂方法模式 -->
+	 <!-- 千万不能忘记factory-method属性配置 -->
+	 <bean id="personFactory" class="com.tyy.domain.creation.PersonFactory"/>
+	 <bean id="chinese" factory-bean="personFactory" factory-method="createPerson">
+	 	<constructor-arg name="name" value="chinese"/>
+	 </bean>
+	 <bean id="american" factory-bean="personFactory" factory-method="createPerson">
+	 	<constructor-arg name="name" value="american"/>
+	 </bean>
+	 
+	 
+	 <!-- 抽象bean与子bean -->
+	 <!-- 抽象bean可以定义一些“资源”，子bean通过指定parent可以通过属性名称匹配实现父bean资源的共享，从而简化配置 -->
+	 <bean id="circleparentBean" abstract="true">
+	 	<property name="radius" value="20"/>
+	 </bean>
+	 <bean id="somecircleparentBean" abstract="true">
+	 	<property name="myCircle" ref="myCircle"/>
+	 </bean>
+	 <bean id="myCircle6" class="com.tyy.domain.Circle" parent="circleparentBean"/>
+	 <bean id="mySomeCircle8" class="com.tyy.domain.SomeCircle" parent="somecircleparentBean"/>
+	 
+	 
+	 <!-- FactoryBean -->
+	 <bean id="myFactoryBean" class="com.tyy.domain.factorybean.ObjectStaticFieldFactory">
+	 	<property name="targetClass" value="com.tyy.domain.ShapeWrapper"/>
+	 	<property name="targetField" value="WRAPPERNAME"/>
+	 </bean>
+	 
+	 
+	 <!-- BeanNameAware -->
+	 <bean id="myCar" class="com.tyy.domain.nameaware.Car">
+	 	<property name="brands" value="Benz"/>
+	 </bean>
+	 
+	 
+	 <!-- <bean depends-on="anotherBean"... -->
+	 <!-- 尤其是在bean在xml中出现的顺序比较乱的时候用 -->
+	 <!-- 不用一般也不会出错 -->
+	 <bean id="myShapeWrapper3" class="com.tyy.domain.ShapeWrapper" depends-on="myCircle7">
+	 	<property name="shape" ref="myCircle7"/>
+	 </bean>
+	 <bean id="myCircle7" class="com.tyy.domain.Circle">
+	 	<property name="radius" value="5"/>
+	 </bean>
+	 
+	 
+	 <!-- bean的生命周期 -->
+	 <!-- 
+	 Spring仅负责prototype型bean的创建（数量、何时销毁无从得知）
+	 对于singleton的Bean，Spring控制其创建、初始化和销毁
+	 
+	 生命周期: 依赖注入 -> Initializing的afterPropertiesSet()方法 -> init-method -> ... -> Disposable的destroy()方法 -> destroy-method
+	 <bean init-method="" destroy-method=""...	or	<beans default-init-method="" default-destroy-method=""...
+	  -->
+	  <bean id="myStone" class="com.tyy.domain.lifecycle.Stone" init-method="initMethod" destroy-method="destroyMethod">
+	  	<property name="name" value="蓝宝石"/>
+	  </bean>
+	 
+	 
+	 <!-- Singleton Bean成员Prototype化 -->
+	 <bean id="myFruitFactory" class="com.tyy.domain.prototypeinjection.FruitFactory">
+	 	<property name="factoryName" value="my Fruit Factory No.1"/>
+	 	<lookup-method name="getFruit" bean="fruit"/> 
+	 </bean>
+	 <bean id="fruit" class="com.tyy.domain.prototypeinjection.Fruit" scope="prototype"/>
+	 
+	 
+	 <!-- Advanced Bean -->
+	 <!-- Spring提供特殊的Bean来通过Bean的getter、property、method获取Bean -->
+	 <!-- 这三种FactoryBean都是工具类Bean -->
+	 <!-- PropertyPathFactoryBean -->
+	 	<!-- value中可以使用.进行多次get操作 -->
+	 <bean id="circleFromProperty" class="org.springframework.beans.factory.config.PropertyPathFactoryBean">
+	 	<property name="targetBeanName" value="myShapeWrapper"/>
+	 	<property name="propertyPath" value="shape"/>
+	 </bean>
+	 <!--
+	 用作匿名嵌套bean时，可以如下方式简化： 
+	 <bean id="myShapeWrapper.shape" class="org.springframework.beans.foctory.config.PropertyPathFactoryBean"/>
+	  -->
+	  
+	 <!-- FieldRetrievingFactoryBean -->
+	 <!-- FieldRetrievingFactoryBean要求field以public进行修饰 -->
+	 <!-- static field:targetClass, targetField -->
+	 <bean id="fieldWrapperStaticName" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+	 	<property name="targetClass" value="com.tyy.domain.advancedBean.FieldWrapper"/>
+	 	<property name="targetField" value="name"/>
+	 	<!-- 
+	 	或通过StaticField一次指定
+	 	<property name="staticField" value="com.tyy.domain.advancedBean.FieldWrapper.fieldWrapperStaticName"/>
+	 	 -->
+	 </bean>
+	 <!--
+	 用作匿名嵌套bean时，可以如下方式简化： 
+	 <bean id="com.tyy.domain.advancedBean.FieldWrapper.fieldWrapperStaticName" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+	  -->
+	  <!-- common field: targetObject, targetField -->
+	  <!-- 具体不再赘述 -->
+	  
+	  <!-- MethodInvokingFactoryBean -->
+	  <!-- static method:targetClass, targetMethod, arguments -->
+	  <!-- 略 -->
+	  <!-- common method:targetObject, targetMethod, arguments -->
+	  <bean id="name$count" class="com.tyy.domain.advancedBean.TestMethodBean"/>
+	  <bean id="nameString" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="prototype">
+	  	<property name="targetObject" ref="name$count"/>
+	  	<property name="targetMethod" value="generateNameString"/>
+	  </bean>
+	  <bean id="nameStringWithParams" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" scope="prototype">
+	  	<property name="targetObject" ref="name$count"/>
+	  	<property name="targetMethod" value="generateNameStringWithParams"/>
+	  	<property name="arguments">
+	  		<list>
+	  			<value>param1</value>
+	  			<value>param2</value>
+	  		</list>
+	  	</property>
+	  </bean>
+	  
+	 
+
+</beans>

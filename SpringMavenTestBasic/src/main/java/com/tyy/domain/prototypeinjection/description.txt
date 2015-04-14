@@ -1,0 +1,7 @@
+Singleton Bean成员Prototype化:
+(singleton Bean的prototype注入)
+有时候需要获取singleton Bean的成员，而需要这些成员不是一成不变的，而又不希望修改代码动态获取
+（例如可以通过实现ApplicationContextAware接口通过Context动态获取，再封装在这个singleton Bean的对应的getter方法中），
+此时可以利用Spring的lookup-method实现这一需求
+
+其底层原理是通过Java的动态代理或cglib类库来实现的
